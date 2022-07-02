@@ -202,6 +202,7 @@ RGBSTRUCT GetPixel(short x, short y, sf::Image *img)
 //    DWORD pitch = ddsd->lPitch >> 1;
 //    DWORD color = pixels[y * pitch + x * 2];
 
+    RGBSTRUCT rgbStruct;
     // TODO: more efficient
     if (x < 0 || y < 0 || x >= int(img->getSize().x) || y >= int(img->getSize().y)) {
         rgbStruct.r = 0;
@@ -210,7 +211,6 @@ RGBSTRUCT GetPixel(short x, short y, sf::Image *img)
     if (!img) {
         return{};
     }
-    RGBSTRUCT rgbStruct;
 
     sf::Color c = img->getPixel(x, y);
     rgbStruct.r = c.r;
