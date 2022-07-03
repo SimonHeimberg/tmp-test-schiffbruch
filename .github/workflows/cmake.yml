@@ -41,7 +41,7 @@ jobs:
       run: echo ${{ runner.os }} - ${{ runner.arch }}
     
     - name: install dependency
-      run: apt-get install libsfml-dev
+      run: sudo apt-get install libsfml-dev
       if: contains(runner.os, 'inux') # Linux
       
       # TODO get dependencies on windows
