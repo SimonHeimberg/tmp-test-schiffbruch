@@ -37,9 +37,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
-    - name: install dependency
+    - name: install dependency (linux)
       run: sudo apt-get install libsfml-dev
-      if: startswith(matrix.config.os, 'ubuntu')
+      if: matrix.config.in_asset == 'linux'
       
       # TODO get dependencies on windows
 
@@ -55,12 +55,12 @@ jobs:
     - name: compress build (tgz)
       run: tar -czf schiffbruch-${{ matrix.config.in_asset }}-${{ runner.arch }}.tgz ./build/schiffbruch
       working-directory: build
-      if: startswith(matrix.config.os, 'ubuntu')
+      if: matrix.config.in_asset == 'linux'
 
     - name: compress build (zip)
       run: zip schiffbruch-${{ matrix.config.in_asset }}-${{ runner.arch }}.zip ./build/schiffbruch
       working-directory: build
-      if: startswith(matrix.config.os, 'windows')
+      if: matrix.config.in_asset == 'windows'
 
     - name: make build temporarely available
       uses: actions/upload-artifact@v3
