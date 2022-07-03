@@ -53,12 +53,12 @@ jobs:
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
     - name: compress build (tgz)
-      run: tar -czf schiffbruch-${{ matrix.config.in_asset }}-${{ runner.arch }}.tgz ./build/schiffbruch
+      run: tar -czf schiffbruch-${{ matrix.config.in_asset }}-${{ runner.arch }}.tgz schiffbruch
       working-directory: build
       if: matrix.config.in_asset == 'linux'
 
     - name: compress build (zip)
-      run: zip schiffbruch-${{ matrix.config.in_asset }}-${{ runner.arch }}.zip ./build/schiffbruch
+      run: zip schiffbruch-${{ matrix.config.in_asset }}-${{ runner.arch }}.zip schiffbruch
       working-directory: build
       if: matrix.config.in_asset == 'windows'
 
