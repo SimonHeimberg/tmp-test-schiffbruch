@@ -43,8 +43,22 @@ jobs:
     - name: install dependency (linux)
       run: sudo apt-get install libsfml-dev
       if: matrix.config.in_asset == 'linux'
-      
-      # TODO get dependencies on windows
+
+    - name: info about dependency manager (other)
+      run: vcpkg version
+      if: matrix.config.in_asset != 'linux'
+
+    - name: install dependency (windows)
+      run: vcpkg install sfml:x86-windows-static
+      if: matrix.config.in_asset == 'windows'
+
+    - name: install dependency (macOS)
+      run: vcpkg install sfml
+      if: matrix.config.in_asset == 'mac'
+
+    - name: integrate dependency (other)
+      run: vcpkg integrate install
+      if: matrix.config.in_asset != 'linux'
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
