@@ -3,10 +3,10 @@ name: CMake
 on:
   push:
     branches: [ "master" ]
-    #paths:
-    #  - src/**
-    #  - bin/**
-    #  - CMakeLists.txt
+    paths:
+      - src/**
+      - bin/**
+      - CMakeLists.txt
   pull_request:
     branches: [ "master" ]
     paths:
@@ -37,12 +37,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
-    - name: test os names
-      run: echo ${{ runner.os }} - ${{ runner.arch }}
-    
     - name: install dependency
       run: sudo apt-get install libsfml-dev
-      if: contains(runner.os, 'inux') # Linux
+      if: startswith(matrix.config.os, 'linux')
       
       # TODO get dependencies on windows
 
@@ -57,20 +54,41 @@ jobs:
 
     - name: compress build (tgz)
       run: tar -czf schiffbruch-${{ matrix.config.in_asset }}-${{ runner.arch }}.tgz ./build/schiffbruch
-      if: contains(runner.os, 'inux') # Linux
+      working-directory: build
+      if: startswith(matrix.config.os, 'linux')
 
     - name: compress build (zip)
       run: zip schiffbruch-${{ matrix.config.in_asset }}-${{ runner.arch }}.zip ./build/schiffbruch
-      if: contains(runner.os, 'indows') # Windows
+      working-directory: build
+      if: startswith(matrix.config.os, 'windows')
 
     - name: make build temporarely available
       uses: actions/upload-artifact@v3
       with:
         name: dist
-        path: schiffbruch-*-*.*
+        path: build/schiffbruch-*-*.*
 
 #    - name: Test
 #      working-directory: ${{github.workspace}}/build
 #      # Execute tests defined by the CMake configuration.  
 #      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
 #      run: ctest -C ${{env.BUILD_TYPE}}
+
+  publish:
+    # separate because it shall run only once
+    needs: build
+    runs-on: linux-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    permissions:
+      contents: write
+
+    steps:
+    - name: get release uploads
+      uses: actions/download-artifact@v3
+      with:
+        name: dist
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: schiffbruch-*-*.*
+        draft: true
